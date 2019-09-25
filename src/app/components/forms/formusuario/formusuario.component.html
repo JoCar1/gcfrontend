@@ -1,0 +1,97 @@
+<div class="dialog-content-wrapper">
+    <mat-toolbar matDialogTitle class="mat-accent m-0">
+        <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
+            <span class="title dialog-title">{{dialogTitle}}</span>
+            <span class="example-spacer"></span>
+            <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
+                        <mat-icon>close</mat-icon>
+                    </button>
+        </mat-toolbar-row>
+
+        <!-- <mat-toolbar-row class="toolbar-bottom py-16" fxLayout="column" fxLayoutAlign="center center">
+            <img [src]="'/assets/imgs/avatar.png'" style="width: 100px" class="avatar contact-avatar huge m-0" [alt]="" />
+            <div class="contact-name mt-8">Usuario</div>
+        </mat-toolbar-row> -->
+    </mat-toolbar>
+
+    <div mat-dialog-content class="p-24 pb-0 m-0" fusePerfectScrollbar>
+
+        <form [formGroup]="dataForm">
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Nombre</mat-label>
+                    <mat-icon matSuffix class="secondary-text">person</mat-icon>
+                    <input name="nombre" formControlName="nombre" matInput required>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Email</mat-label>
+                    <mat-icon matSuffix class="secondary-text">email</mat-icon>
+                    <input name="email" formControlName="email" matInput type="email" required>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Telefono</mat-label>
+                    <mat-icon matSuffix class="secondary-text">phone</mat-icon>
+                    <input name="telefono" formControlName="telefono" matInput>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Celular</mat-label>
+                    <mat-icon matSuffix class="secondary-text">phone_iphone</mat-icon>
+                    <input name="celular" formControlName="celular" matInput>
+                </mat-form-field>
+            </div>
+
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Usuario</mat-label>
+                    <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
+                    <input name="username" formControlName="username" matInput required>
+                </mat-form-field>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Password</mat-label>
+                    <!-- <mat-icon matSuffix class="secondary-text">vpn_key</mat-icon> -->
+                    <mat-icon matSuffix (click)="hide = !hide">{{ hide ? 'visibility' : 'visibility_off'}}</mat-icon>
+                    <input name="password" formControlName="password" [type]="hide ? 'password' : 'text'" matInput [required]="action == 'add'">
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Rol</mat-label>
+                    <!-- <mat-icon matSuffix class="secondary-text">format_list_bulleted</mat-icon> -->
+                    <mat-select disableRipple name="rol" formControlName="rol" required>
+                        <mat-option value="administrador">Administrador</mat-option>
+                        <mat-option value="editor">Editor</mat-option>
+                        <mat-option value="visor">Visor</mat-option>
+                    </mat-select>
+                </mat-form-field>
+            </div>
+
+        </form>
+
+    </div>
+
+    <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="end center">
+
+        <button *ngIf="action === 'add'" mat-button class="save-button" (click)="guardar()" [disabled]="dataForm.invalid" aria-label="SAVE">
+            Crear
+        </button>
+
+        <button *ngIf="action === 'edit'" mat-button class="save-button" (click)="matDialogRef.close(['save',dataForm])" [disabled]="dataForm.invalid" aria-label="SAVE">
+            Actualizar 
+        </button>
+
+    </div>
+</div>
