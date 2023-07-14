@@ -80,3 +80,20 @@ export class AuthGuardVi implements CanActivate, CanActivateChild {
         return this.canActivate(route, state);
     }
 }
+
+@Injectable()
+export class AuthApiWeb implements CanActivate, CanActivateChild {
+    constructor(private auth: AuthService, private router: Router) {}
+    canActivate(
+        next:  ActivatedRouteSnapshot,
+        state: RouterStateSnapshot
+    ): boolean {
+        if (this.auth.isAuthenticated(['apiweb'])) { return true; }
+        console.log('Navegación no autenticada para iniciar sesión');
+        this.router.navigateByUrl('/eventos');
+        return false;
+    }
+    canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+        return this.canActivate(route, state);
+    }
+}

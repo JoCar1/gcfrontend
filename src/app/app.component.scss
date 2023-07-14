@@ -1,3 +1,13 @@
+.container {
+    display: grid;
+    grid-template-rows: auto 1fr; /* La barra de herramientas se ajusta automáticamente, el contenido principal ocupa el restante */
+    min-height: 100vh; /* Establece una altura mínima igual a la altura de la ventana */
+  }
+  
+  .contenido-principal {
+    overflow: auto; /* Habilitar el desplazamiento si el contenido excede el espacio */
+  }
+  
 .a-container {
     /* position: absolute;
     top: 60px;
@@ -11,8 +21,12 @@
     right: 0;
 }
 
+.mat-list-base .mat-list-item {
+    color: #fff;
+}
+
 .active {
-    background-color: rgb(54, 61, 87) !important;
+    background-color: #576473 !important;
     opacity: 0.95;
     color: #fff;
     /*background: rgba(251, 134, 7, 0.50) !important;*/
@@ -48,4 +62,12 @@
 
 .example-icon {
     padding: 0 14px;
+}
+
+.mat-drawer {
+    background-color: #35404f;
+}
+
+.mat-toolbar-single-row {
+    height: 100px;
 }

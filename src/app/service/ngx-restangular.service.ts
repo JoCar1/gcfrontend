@@ -25,9 +25,10 @@ export function NgxRestangularService (RestangularProvider,AutentificacionServic
     return AutentificacionService.refreshToken();
   };
   RestangularProvider
-  // .setBaseUrl('/api')
-  // .setBaseUrl('http://192.168.1.35:8000/api')
-  .setBaseUrl('http://127.0.0.1:8000/api')
+  //  .setBaseUrl('/api')
+  // .setBaseUrl('http://10.0.8.5:8000/api')
+   .setBaseUrl('http://127.0.0.1:8000/api')
+  // .setBaseUrl('http://contratosmanaco/api')
   .setDefaultHeaders(headerss)// set static header
   .addResponseInterceptor((data, operation, what, url, response)=> {
     console.log(data);

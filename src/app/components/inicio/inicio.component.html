@@ -1,1 +1,110 @@
-<p>inicio works!</p>
+<table mat-table [dataSource]="dataSource" multiTemplateDataRows class="mat-elevation-z8">
+
+    <ng-container matColumnDef="nombre" sticky>
+        <th mat-header-cell *matHeaderCellDef disableClear> Nombre </th>
+        <td mat-cell *matCellDef="let element"> {{element.evento.nombre}} </td>
+    </ng-container>
+    <ng-container matColumnDef="contrato">
+        <th mat-header-cell *matHeaderCellDef> Contrato. </th>
+        <td mat-cell *matCellDef="let element"> {{element.evento.contrato.nombre}} </td>
+    </ng-container>
+    <!-- Position Column -->
+    <ng-container matColumnDef="fecha_evento">
+        <th mat-header-cell *matHeaderCellDef> Fecha evento. </th>
+        <td mat-cell *matCellDef="let element"> {{element.evento.fecha_evento}} </td>
+    </ng-container>
+    <!-- Position Column -->
+    <ng-container matColumnDef="fecha_recordatorio">
+        <th mat-header-cell *matHeaderCellDef> Fecha recordatorio. </th>
+        <td mat-cell *matCellDef="let element"> {{element.evento.fecha_recordatorio}} </td>
+    </ng-container>
+    <!-- Star Column -->
+    <ng-container matColumnDef="created_at" stickyEnd>
+        <th mat-header-cell *matHeaderCellDef>Creado </th>
+        <td mat-cell *matCellDef="let element">
+            <mat-icon>calendar_today</mat-icon>
+            {{element.evento.created_at | date}}
+        </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="columnsToDisplay.length">
+            <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                <!-- <div class="example-element-diagram">
+                    <div class="example-element-position"> {{element.position}} </div>
+                    <div class="example-element-symbol"> {{element.symbol}} </div>
+                    <div class="example-element-name"> {{element.name}} </div>
+                    <div class="example-element-weight"> {{element.weight}} </div>
+                </div> -->
+                <div class="example-element-description" style="margin: 0 auto;">
+                    <mat-card class="example-card">
+                        <mat-card-header>
+                            <div mat-card-avatar class="example-header-image"></div>
+                            <mat-card-title><strong>Nombre : </strong>{{element.evento.nombre}}</mat-card-title>
+                        </mat-card-header>
+                        <mat-card-content>
+                            <p>
+                                <strong>Descripcion :</strong> {{element.evento.descripcion}}
+                            </p>
+                            <p>
+                                <strong>Fecha evento :</strong> {{element.evento.fecha_evento | date}}
+                            </p>
+                            <p>
+                                <strong>Fecha recordatorio :</strong> {{element.evento.fecha_recordatorio | date}}
+                            </p>
+                            <p>
+                                <strong>Notificacion :</strong> {{element.evento.notificacion}}
+                            </p>
+                            <p>
+                                <strong>Frecuencia notificacion :</strong>
+                                <span *ngIf="element.evento.frecuencia_notificacion == 'd'">Dia</span>
+                                <span *ngIf="element.evento.frecuencia_notificacion == 'm'">Mes</span>
+                                <span *ngIf="element.evento.frecuencia_notificacion == 'y'">Año</span>
+                            </p>
+                            <p>
+                                <strong>Frecuencia notificacion cantidad :</strong> {{element.evento.frecuencia_notificacion_cantidad}}
+                            </p>
+                            <p>
+                                <strong>Envio email :</strong> {{element.evento.envio_email}}
+                            </p>
+                            <p>
+                                <strong>Frecuencia email :</strong>
+                                <span *ngIf="element.evento.frecuencia_email == 'd'">Dia</span>
+                                <span *ngIf="element.evento.frecuencia_email == 'm'">Mes</span>
+                                <span *ngIf="element.evento.frecuencia_email == 'y'">Año</span>
+
+                            </p>
+                            <p>
+                                <strong>Frecuencia email cantidad :</strong> {{element.evento.frecuencia_email_cantidad}}
+                            </p>
+                            <p>
+                                <strong>Correos :</strong>
+                            </p>
+                            <p *ngFor="let item of element.evento.emails">
+                                {{item.email}}
+                            </p>
+                            <p>
+                                <strong>Contrato :</strong> {{element.evento.contrato.nombre}}
+                            </p>
+                            <p>
+                                <strong>Socio :</strong> {{element.evento.contrato.socio.nombre}}
+                            </p>
+                            <p>
+                                <strong>Telefono :</strong> {{element.evento.contrato.socio.telefono}}
+                            </p>
+                            <p>
+                                <strong>Celular :</strong> {{element.evento.contrato.socio.celular}}
+                            </p>
+                        </mat-card-content>
+                    </mat-card>
+                </div>
+            </div>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;" class="example-element-row" [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+</table>

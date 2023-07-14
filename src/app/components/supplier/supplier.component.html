@@ -1,0 +1,650 @@
+<div [@routerTransition]>
+
+    <div class="example-container e-container mat-elevation-z8">
+        <mat-horizontal-stepper color="primary" linear #stepper class="mat-horizontal-stepper">
+            <mat-step [stepControl]="formGroup1">
+                <form [formGroup]="formGroup1">
+                    <ng-template matStepLabel>Nuevo proveedor</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>Nuevo proveedor</mat-card-title>
+                            <mat-card-content>
+                                <mat-slide-toggle formControlName="nitRequiredf" [(ngModel)]="nitRequired"
+                                    (change)="onToggleChange($event)">
+                                    Nit/CI requerido
+                                </mat-slide-toggle>
+
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Nº proveedor</mat-label>
+                                                <input matInput formControlName="vendnum" [required]="nitRequired">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Grupo</mat-label>
+                                                <mat-select formControlName="vendgrp">
+                                                    <mat-option [value]="'PNAL'">
+                                                        Proveedor Nacional
+                                                    </mat-option>
+                                                    <mat-option [value]="'PEXT'">
+                                                        Proveedor exterior
+                                                    </mat-option>
+                                                    <mat-option [value]="'PBSO'">
+                                                        Proveedor BS
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button color="primary" mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="formGroup2">
+                <form [formGroup]="formGroup2">
+                    <ng-template matStepLabel>Datos personales</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>D. personales</mat-card-title>
+                            <mat-card-content class="example-card-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Nombre completo</mat-label>
+                                                <input matInput formControlName="name">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Nombre corto</mat-label>
+                                                <input matInput formControlName="short">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Nombre largo</mat-label>
+                                                <input matInput formControlName="long_name">
+                                            </mat-form-field>
+                                        </div>
+
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Dirección:</mat-label>
+                                                <input matInput formControlName="address1" placeholder="Dirección">
+                                                <input matInput formControlName="address2" placeholder="Zona">
+                                                <input matInput formControlName="address3" placeholder="Provincia">
+                                                <input matInput formControlName="address4" placeholder="Ciudad">
+                                            </mat-form-field>
+                                        </div>
+                                        <!-- <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Pais</mat-label>
+                                                <input matInput formControlName="country">
+                                            </mat-form-field>
+                                        </div> -->
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Pais</mat-label>
+                                                <mat-select formControlName="country"
+                                                    (selectionChange)="selectpaises($event.value)">
+                                                    <mat-option [value]="item.iso2" *ngFor="let item of paises">
+                                                        {{ item.nombre}} - {{ item.iso2}}
+                                                    </mat-option>
+                                                    <div *ngIf="paises.length === 0">Cargando subcuentas...</div>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Código postal</mat-label>
+                                                <input matInput formControlName="postcode">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Caja oficina postal(P.B.O.)</mat-label>
+                                                <input matInput formControlName="pobox_num">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Código postal (P.B.O.)</mat-label>
+                                                <input matInput formControlName="pobox_postcode">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Compañia código postal(P.B.O.)</mat-label>
+                                                <input matInput formControlName="cmpny_postcode">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Telefono</mat-label>
+                                                <input matInput formControlName="phone">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Celular</mat-label>
+                                                <input matInput formControlName="cell_phone">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Fax</mat-label>
+                                                <input matInput formControlName="telefax">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>E-mail</mat-label>
+                                                <input matInput formControlName="e_mail">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Web</mat-label>
+                                                <input matInput formControlName="web_address">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Telex</mat-label>
+                                                <input matInput formControlName="telex">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Address Class</mat-label>
+                                                <input matInput formControlName="class">
+                                            </mat-form-field>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button mat-button matStepperPrevious>Anterior</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="formGroup3">
+                <form [formGroup]="formGroup3">
+                    <ng-template matStepLabel>Dosificación</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>Dosificación</mat-card-title>
+                            <mat-card-content class="example-card-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Código concepto</mat-label>
+                                                <mat-select formControlName="codigo_concepto">
+                                                    <mat-option [value]="'A'">
+                                                        A - Aduanas courrier
+                                                    </mat-option>
+                                                    <mat-option [value]="'G'">
+                                                        G - General
+                                                    </mat-option>
+                                                    <mat-option [value]="'L'">
+                                                        L - Lineas aéreas
+                                                    </mat-option>
+                                                    <mat-option [value]="'T'">
+                                                        T - Transporte carga
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Tipo documento</mat-label>
+                                                <mat-select formControlName="tipo_docid">
+                                                    <mat-option [value]="'P'">
+                                                        P - Pasaporte
+                                                    </mat-option>
+                                                    <mat-option [value]="'Q'">
+                                                        Q - Cédula de identidad
+                                                    </mat-option>
+                                                    <mat-option [value]="'R'">
+                                                        R - RUC
+                                                    </mat-option>
+                                                    <mat-option [value]="'T'">
+                                                        T - NIT
+                                                    </mat-option>
+                                                    <mat-option [value]="'W'">
+                                                        W - Cuenta fiscal
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Extensión documento</mat-label>
+                                                <mat-select formControlName="extension_docid">
+                                                    <mat-option [value]="'BE'">
+                                                        BE - Beni
+                                                    </mat-option>
+                                                    <mat-option [value]="'CB'">
+                                                        CB - Cochabamba
+                                                    </mat-option>
+                                                    <mat-option [value]="'CH'">
+                                                        CH - Chuquisaca
+                                                    </mat-option>
+                                                    <mat-option [value]="'LP'">
+                                                        LP - La Paz
+                                                    </mat-option>
+                                                    <mat-option [value]="'OR'">
+                                                        OR - Oruro
+                                                    </mat-option>
+                                                    <mat-option [value]="'PA'">
+                                                        PA - Pando
+                                                    </mat-option>
+                                                    <mat-option [value]="'PE'">
+                                                        PE - Persona extranjera
+                                                    </mat-option>
+                                                    <mat-option [value]="'PO'">
+                                                        PO - Potosí
+                                                    </mat-option>
+                                                    <mat-option [value]="'SC'">
+                                                        SC - Santa Cruz
+                                                    </mat-option>
+                                                    <mat-option [value]="'TJ'">
+                                                        TJ - Tarija
+                                                    </mat-option>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Controlar factura</mat-label>
+                                                <mat-select formControlName="invoice_control">
+                                                    <mat-option [value]="'Y'">
+                                                        Si
+                                                    </mat-option>
+                                                    <mat-option [value]="'N'">
+                                                        No
+                                                    </mat-option>
+
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button mat-button matStepperPrevious>Anterior</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="formGroup4">
+                <form [formGroup]="formGroup4">
+                    <ng-template matStepLabel>Información bancanria</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>Información bancanria</mat-card-title>
+                            <mat-card-content class="example-card-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Banco</mat-label>
+                                                <mat-select formControlName="bankcode"
+                                                    (selectionChange)="selectbancos($event.value)">
+                                                    <mat-option [value]="banco.bankcode" *ngFor="let banco of bancos">
+                                                        {{ banco.bankname}} - {{ banco.bankcode}}
+                                                    </mat-option>
+                                                    <div *ngIf="bancos.length === 0">Cargando subcuentas...</div>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Banco ID</mat-label>
+                                                <input matInput formControlName="bankid">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Nombre</mat-label>
+                                                <input matInput formControlName="bankname">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Sucursal</mat-label>
+                                                <input matInput formControlName="bankbranch">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Dirección</mat-label>
+                                                <input matInput formControlName="bankadd1">
+                                                <input matInput formControlName="bankadd2">
+                                                <input matInput formControlName="bankadd3">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Ciudad</mat-label>
+                                                <input matInput formControlName="bankadd4">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>BIC(SWIFT)</mat-label>
+                                                <input matInput formControlName="swift">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>CAB</mat-label>
+                                                <input matInput formControlName="cab_spain">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>ABI</mat-label>
+                                                <input matInput formControlName="abi_spain">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Pagar cargos por transferencia bancaria</mat-label>
+                                                <mat-select formControlName="pay_bank_charge">
+                                                    <mat-option [value]="'Y'">
+                                                        Si
+                                                    </mat-option>
+                                                    <mat-option [value]="'N'">
+                                                        No
+                                                    </mat-option>
+
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>IBAN</mat-label>
+                                                <input matInput formControlName="iban">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Cuenta de compensasión(Bank Clearing)</mat-label>
+                                                <input matInput formControlName="bankclear">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button mat-button matStepperPrevious>Anterior</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <!-- <mat-step [stepControl]="formGroup5">
+                <form [formGroup]="formGroup5">
+                    <ng-template matStepLabel>Varios(Grupos)</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>Varios(Grupos)</mat-card-title>
+                            <mat-card-content class="example-card-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+
+                                    </div>
+
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button mat-button matStepperPrevious>Anterior</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step> -->
+            <mat-step>
+
+                <ng-template matStepLabel>Cuentas</ng-template>
+                <br>
+                <div class="centered-content">
+                    <mat-card class="example-card">
+                        <mat-card-title>Cuentas</mat-card-title>
+                        <mat-card-content class="example-card-content">
+                            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                <div fxFlex="100">
+                                    <mat-form-field class="full-width" appearance="fill">
+                                        <input type="text" matInput [matAutocomplete]="auto"
+                                            placeholder="Buscar y agregar cuenta" [(ngModel)]="selectedCuenta"
+                                            (input)="filterCuentas($event)">
+                                        <mat-autocomplete #auto="matAutocomplete"
+                                            (optionSelected)="onCuentaSelected($event)">
+                                            <mat-option *ngFor="let cuenta of cuentasFiltradas" [value]="cuenta">
+                                                {{ cuenta.accnum }} - {{ cuenta.accsub }} - {{ cuenta.name }}
+                                            </mat-option>
+                                        </mat-autocomplete>
+                                    </mat-form-field>
+
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th>Accnum</th>
+                                                <th>Accsub</th>
+                                                <th>Account Key</th>
+                                                <th>Name</th>
+                                                <th>Por defecto</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let cuenta of cuentasSeleccionadas">
+                                                <td>{{ cuenta.accnum }}</td>
+                                                <td>{{ cuenta.accsub }}</td>
+                                                <td>{{ cuenta.account_key }}</td>
+                                                <td>{{ cuenta.name }}</td>
+                                                <td>
+                                                    <mat-slide-toggle [(ngModel)]="cuenta.porDefecto"
+                                                        (change)="onPorDefectoChange(cuenta)"></mat-slide-toggle>
+                                                </td>
+                                                <td>
+                                                    <button mat-icon-button color="warn"
+                                                        (click)="eliminarCuenta(cuenta)">
+                                                        <mat-icon>delete</mat-icon>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </mat-card-content>
+                    </mat-card>
+                    <br>
+                </div>
+                <div class="button-container">
+                    <button mat-button matStepperPrevious>Anterior</button>
+                    <button mat-button matStepperNext>Siguiente</button>
+                </div>
+
+            </mat-step>
+            <mat-step [stepControl]="formGroup7">
+                <form [formGroup]="formGroup7">
+                    <ng-template matStepLabel>Información de pago</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>Información de pago</mat-card-title>
+                            <mat-card-content class="example-card-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Metodo de pago</mat-label>
+                                                <mat-select formControlName="pmttype"
+                                                    (selectionChange)="selectmetodospagos($event.value)">
+                                                    <mat-option [value]="''">
+                                                        Ninguno
+                                                    </mat-option>
+                                                    <mat-option [value]="item.rv_meaning"
+                                                        *ngFor="let item of metodospagos">
+                                                        {{item.rv_meaning}}
+                                                    </mat-option>
+                                                    <div *ngIf="metodospagos.length === 0">Cargando subcuentas...</div>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Termino de pago ADONIS</mat-label>
+                                                <mat-select formControlName="terms_code"
+                                                    (selectionChange)="selectterminospagos($event.value)">
+                                                    <mat-option [value]="''">
+                                                        Ninguno
+                                                    </mat-option>
+                                                    <mat-option [value]="item.terms_code"
+                                                        *ngFor="let item of terminospagos">
+                                                        {{ item.terms_code}} - {{ item.termname}}
+                                                    </mat-option>
+                                                    <div *ngIf="terminospagos.length === 0">Cargando subcuentas...</div>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Termino de pago COINS</mat-label>
+                                                <mat-select formControlName="term_pay_cd"
+                                                    (selectionChange)="selectterminospagoscoins($event.value)">
+                                                    <mat-option [value]="''">
+                                                        Ninguno
+                                                    </mat-option>
+                                                    <mat-option [value]="item.term_pay_cd"
+                                                        *ngFor="let item of terminospagoscoins">
+                                                        {{ item.term_pay_cd}} - {{ item.term_pay_desc}}
+                                                    </mat-option>
+                                                    <div *ngIf="terminospagoscoins.length === 0">Cargando subcuentas...
+                                                    </div>
+                                                </mat-select>
+                                                <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button mat-button matStepperPrevious>Anterior</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step [stepControl]="formGroup8">
+                <form [formGroup]="formGroup8">
+                    <ng-template matStepLabel>Varios</ng-template>
+                    <br>
+                    <div class="centered-content">
+                        <mat-card class="example-card">
+                            <mat-card-title>Varios</mat-card-title>
+                            <mat-card-content class="example-card-content">
+                                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                                    <div fxFlex="100">
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Contacto</mat-label>
+                                                <input matInput formControlName="contact">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Comentarios</mat-label>
+                                                <input matInput formControlName="comments">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Profesión</mat-label>
+                                                <input matInput formControlName="profession">
+                                            </mat-form-field>
+                                        </div>
+                                        <div fxLayout="row" fxLayoutAlign="start start">
+                                            <mat-form-field appearance="outline" fxFlex>
+                                                <mat-label>Código taller externo</mat-label>
+                                                <input matInput formControlName="cod_prov">
+                                            </mat-form-field>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </mat-card-content>
+                        </mat-card>
+                        <br>
+                    </div>
+                    <div class="button-container">
+                        <button mat-button matStepperPrevious>Anterior</button>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+            <mat-step>
+                <ng-template matStepLabel>Finalizar</ng-template>
+                <div class="button-container">
+                    <button mat-button matStepperNext>Terminar</button>
+                </div>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </div>
+</div>

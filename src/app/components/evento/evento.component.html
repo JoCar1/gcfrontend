@@ -1,1 +1,157 @@
-<p>evento works!</p>
+<div [@routerTransition]>
+    <div class="example-button-row" style="text-align: right;    padding: 20px;">
+        <button (click)="openexcel()" mat-raised-button color="light">Exportar Excel</button>
+        <button *ngIf="auth.isAuthenticated(['administrador','editor'])" mat-raised-button color="primary" (click)="openDialog('add')">Agregar Evento</button>
+
+    </div>
+    <div class="p-24 pb-0 m-0">
+        <div fxLayout="row" fxLayoutAlign="start start">
+            <mat-form-field appearance="outline" fxFlex="40">
+                <mat-label>Fecha inicio</mat-label>
+                <input matInput type="date" name="fecha_inicio" [(ngModel)]="dateinicio" placeholder="Elige una fecha" required>
+            </mat-form-field>
+            <mat-form-field appearance="outline" fxFlex="40">
+                <mat-label>Fecha fin</mat-label>
+                <input matInput type="date" name="fecha_fin" [(ngModel)]="datefin" placeholder="Elige una fecha" required>
+            </mat-form-field>
+            <button mat-raised-button color="accent" style="top: 10px;" (click)="buscarfecha()">Buscar</button>
+        </div>
+    </div>
+    <mat-form-field floatLabel="always" class="bbusc">
+        <input matInput #filter placeholder="Buscar">
+        <mat-icon matSuffix>search</mat-icon>
+    </mat-form-field>
+    <!-- <mat-form-field>
+            <input matInput #filter (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field> -->
+    <div class="example-container e-container mat-elevation-z8">
+        <div class="e-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
+            <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+            <div class="e-rate-limit-reached" *ngIf="isRateLimitReached">
+                Se alcanzó el límite de la tasa API.
+            </div>
+        </div>
+
+        <div class="e-table-container">
+            <table mat-table [dataSource]="data" matSort multiTemplateDataRows class="mat-elevation-z8" matSortActive="nombre" matSortDisableClear matSortDirection="asc">
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="nombre" sticky>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header disableClear> Evento </th>
+                    <td mat-cell *matCellDef="let element"> {{element.nombre}} </td>
+                </ng-container>
+                <ng-container matColumnDef="contrato">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> N° Contrato. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.contrato.telefono}} </td>
+                </ng-container>
+                <!-- Position Column -->
+                <ng-container matColumnDef="fecha_evento">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha evento. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.fecha_evento}} </td>
+                </ng-container>
+                <!-- Position Column -->
+                <ng-container matColumnDef="fecha_recordatorio">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha recordatorio. </th>
+                    <td mat-cell *matCellDef="let element"> {{element.fecha_recordatorio}} </td>
+                </ng-container>
+                <!-- Star Column -->
+                <ng-container matColumnDef="created_at" stickyEnd>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>Creado </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-icon>calendar_today</mat-icon>
+                        {{element.created_at | date}}
+                    </td>
+                </ng-container>
+
+                <ng-container matColumnDef="expandedDetail">
+                    <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+                        <div class="example-element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+                            <!-- <div class="example-element-diagram">
+                                    <div class="example-element-position"> {{element.nombre}} </div>
+                                    <div class="example-element-symbol"> {{element.usuario}} </div>
+                                    <div class="example-element-name"> {{element.rol}} </div>
+                                    <div class="example-element-weight"> {{element.telefono}} </div>
+                                </div> -->
+                            <div class="example-element-description" style="margin: 0 auto;">
+                                <mat-card class="example-card">
+                                    <mat-card-header>
+                                        <div mat-card-avatar class="example-header-image"></div>
+                                        <mat-card-title><strong>Nombre : </strong>{{element.nombre}}</mat-card-title>
+                                        <!-- <mat-card-subtitle><strong>Email :</strong> {{element.email}}</mat-card-subtitle> -->
+                                    </mat-card-header>
+                                    <!-- <img mat-card-image src="https://material.angular.io/assets/img/examples/shiba2.jpg" alt="Photo of a Shiba Inu"> -->
+                                    <mat-card-content>
+                                        <p>
+                                            <strong>Descripcion :</strong> {{element.descripcion}}
+                                        </p>
+                                        <p>
+                                            <strong>Fecha evento :</strong> {{element.fecha_evento | date}}
+                                        </p>
+                                        <p>
+                                            <strong>Fecha recordatorio :</strong> {{element.fecha_recordatorio | date}}
+                                        </p>
+                                        <p>
+                                            <strong>Notificacion :</strong> {{element.notificacion}}
+                                        </p>
+                                        <p>
+                                            <strong>Frecuencia notificacion :</strong>
+                                            <span *ngIf="element.frecuencia_notificacion == 'd'">Dia</span>
+                                            <span *ngIf="element.frecuencia_notificacion == 'm'">Mes</span>
+                                            <span *ngIf="element.frecuencia_notificacion == 'y'">Año</span>
+                                        </p>
+                                        <p>
+                                            <strong>Frecuencia notificacion cantidad :</strong> {{element.frecuencia_notificacion_cantidad}}
+                                        </p>
+                                        <p>
+                                            <strong>Envio email :</strong> {{element.envio_email}}
+                                        </p>
+                                        <p>
+                                            <strong>Frecuencia email :</strong>
+                                            <span *ngIf="element.frecuencia_email == 'd'">Dia</span>
+                                            <span *ngIf="element.frecuencia_email == 'm'">Mes</span>
+                                            <span *ngIf="element.frecuencia_email == 'y'">Año</span>
+
+                                        </p>
+                                        <p>
+                                            <strong>Frecuencia email cantidad :</strong> {{element.frecuencia_email_cantidad}}
+                                        </p>
+                                        <p>
+                                            <strong>Correos :</strong>
+                                        </p>
+                                        <p *ngFor="let item of element.emails">
+                                            {{item.email}}
+                                        </p>
+                                        <p>
+                                            <strong>Contrato :</strong> {{element.contrato.telefono}}
+                                        </p>
+                                        <p>
+                                            <strong>Socio :</strong> {{element.contrato.socio.nombre}}
+                                        </p>
+                                        <p>
+                                            <strong>Telefono :</strong> {{element.contrato.socio.telefono}}
+                                        </p>
+                                        <p>
+                                            <strong>Celular :</strong> {{element.contrato.socio.celular}}
+                                        </p>
+                                    </mat-card-content>
+                                    <mat-card-actions>
+                                        <button *ngIf="auth.isAuthenticated(['administrador','editor'])" mat-raised-button color="accent" (click)="evento=element;openDialog('edit')">Editar</button>
+                                        <button *ngIf="auth.isAuthenticated(['administrador','editor'])" mat-raised-button color="warn" (click)="removeevento(element)">Eliminar</button>
+                                        <!-- <button mat-button>SHARE</button> -->
+                                    </mat-card-actions>
+                                </mat-card>
+                                <!-- <strong>Nombre : </strong>{{element.nombre}}, <strong>Email :</strong> {{element.email}}, <strong>Telefono :</strong> {{element.telefono}},<strong>Celular :</strong> {{element.celular}},<strong>Rol :</strong> {{element.rol}},<strong>Unidad de negocio :</strong>                                {{element.organizativaunidad.nombre}} -->
+                            </div>
+                        </div>
+                    </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let element; columns: displayedColumns;" class="example-element-row" [class.example-expanded-row]="expandedElement === element" (click)="expandedElement = expandedElement === element ? null : element"></tr>
+                <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+            </table>
+        </div>
+
+        <mat-paginator #paginator [length]="resultsLength" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="pageEvent = $event" showFirstLastButtons></mat-paginator>
+    </div>
+</div>

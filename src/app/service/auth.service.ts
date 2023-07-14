@@ -14,9 +14,9 @@ import { MatSnackBar } from '@angular/material';
   providedIn: 'root'
 })
 export class AuthService {
-
   private apiRoot: string = "http://127.0.0.1:8000/api";
-  // private apiRoot: string = "http://192.168.1.35:8000/api";
+  // private apiRoot: string = "http://contratosmanaco/api";
+  // private apiRoot: string = "http://10.0.8.5:8000/api";
   // private apiRoot: string = "/api";
   // private user: User;
   usuario$: Observable<Iusuario>;
@@ -58,7 +58,7 @@ export class AuthService {
   getAccessTokenn(): Observable <string> {
     this.isAccessToken().subscribe((da) => {
        if(!da) {
-            this.tokenStorage.setAccessToken('eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjI4MWE2MGUwYjU4ZDE1NjI0ODNmNmYyZmEyNzRhY2FjYTNmNDNlYmUwNTdmMDQ4M2Y2NmM0MWZiNGFiMTY0OWZhYmNmOGVjMzg4YTQ4YTFkIn0.eyJhdWQiOiIxIiwianRpIjoiMjgxYTYwZTBiNThkMTU2MjQ4M2Y2ZjJmYTI3NGFjYWNhM2Y0M2ViZTA1N2YwNDgzZjY2YzQxZmI0YWIxNjQ5ZmFiY2Y4ZWMzODhhNDhhMWQiLCJpYXQiOjE1NjkzMzYwNDUsIm5iZiI6MTU2OTMzNjA0NSwiZXhwIjo0NzI1MDA5NjQ1LCJzdWIiOiIxIiwic2NvcGVzIjpbImFwaXdlYiJdfQ.h3a9802L_-6YPu_U7tebC4-_eN49iJlpMM8AdzHFsamkWaxPZBvkkrpZ7GWSNaRJXQLJlblBifHzLmsGxBuggQqEk_CP2USB8aRq6wzoyHJcGzgAqQIwp3EpLJuxxqy2D9hcnhp-xcX9C6Ih7SaRbtY_z2SKzQX10FM3YisufP1ZfQpJGiJtf3Kk63rvSI9q0rm0FdGyhqs3IkCOmvD8G6_X9-w3h8cR-yLHwfzdvBCtyDmrbzcY0VvdU3meBfRoBVQo3GL9RkvN-7cB9l3tSvxcobl5Nnm7FhFRvU2DqrcSxKM6R-kgDMridFi6IkewOUH0VoQ1uqTepweuyAKmqtjKbfQah5rOxYMNp7CqiIMM_btDLpw2V-E6G-mMPraBuODaQATvwMokA-N6fsexweyJr_fSc2km9aUHVeQa_w0pVSYfeWkosbws462SY2WhxJce9VGLuDPrGPhWh0bm1I-9e5lRONAmS95BJDmvNCCBzL49fS_qgeFXqly_ZkegipVbVFMymmK1s7r_vo2MzFYo8T0Lb9C_0QQkuCEfmjUkgBwbU1iy2icnZ8ysBk_Pw1EfLpYq6a7zI2rUJPg6LGR1ik0RbzBd2AyOA6orJOliX3Y-_nA5mKERAqFenyo8czRvusHsmYkPBfc827iWJFB2yuMOIwVq1OuOFMQfXFU');
+            this.tokenStorage.setAccessToken('eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjFmMzY0YWRiNDIxYmIyMmI1MmVjYTdkYmIzOWEwZWYzMzZiMjFiOGFmNjFlZmE3YzRmZTcyMzc3NTE1Y2Q5MDYzM2E0YTc1NWIwOTA3YjJlIn0.eyJhdWQiOiIxIiwianRpIjoiMWYzNjRhZGI0MjFiYjIyYjUyZWNhN2RiYjM5YTBlZjMzNmIyMWI4YWY2MWVmYTdjNGZlNzIzNzc1MTVjZDkwNjMzYTRhNzU1YjA5MDdiMmUiLCJpYXQiOjE1Njk2OTc5NDIsIm5iZiI6MTU2OTY5Nzk0MiwiZXhwIjoxNTg1NDIyNzQyLCJzdWIiOiIxIiwic2NvcGVzIjpbImFwaXdlYiJdfQ.JYhrKCQ0hdrBBHEqBFj29LNsW3jlgxFRydnsevTa3RZKJKIVtCVRJq6Seab0DBITilSSdELJd4HaJmu3WNrRXD87HUp-yaSbto24Mmuy04nLtQAbp50RXTYurlliMN3NRnudUgAROGzRUzRs4dgsDyVq1zOOZb6Zokp2E89GcA0wtV6tsjwKgM_o2xhmb5JNarJUAsA0VxMP_0hw8dWv0LjEYL7bLI7wJlkPjU4cwc3u2AUKRjtC_6hS4WFCuYmTsInP8IVBr3LcsP8uis6-b0zIdSC5fDCVV6g7rt6JB6k11wGsO2cPjTmwbTVTHwVNwvYNKlECfGIL8Sx31Hjf4I_ro3QcHEouTnaYA1L1VJA1vcn9Sq2ju9bP-WMdJC1cWUkRcleCRMh-EMKyKdIL0o96HReTeN4VRU_mNg9YmIzymaUFiHq3AY3hxrKKKQcIQ_bbUOAGntjZ8oZSrpoPztwO9soMcIHNO_6woZZ6og3RyLyZGzsYqHhB_ZNKG8xVXcMp6nYXDZPBR-GmcTKFhGmJmId1TAA0IM7e-DrzdymVeGg7DZl-jpFLeewF3YeJUL12b2yyKkNM7JrZCVfX2C3ixvqMuAzPWz526ycqYZ-cP5IXF41XOOgX0q6vOEjqjqUZ7LaDli1yYylWSpPUoG_gvRlmyddRZaHmDaKL2kI');
         }
     });
     return this.tokenStorage.getAccessToken();
@@ -82,24 +82,25 @@ export class AuthService {
 
   salir(){
     // console.log("salir");
+    localStorage.removeItem('notificacions');
     this.tokenStorage.clear();
     this.getAccessTokenn();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/']);
     // location.reload(true);
   }
 
   login(data:ILogin): Observable<any>{
     const url = `${this.apiRoot}/login`;
     const da = { 
-      usuario: data.usuario,
-      password: data.password,
-      provider: 'adm'
+      username: data.username,
+      password: data.password
+      // provider: 'adm'
     };
     return this.http.post(url, da, this.headerDefault())
     .pipe(
       tap((tokens: any) => {
         this.saveAccessData(tokens);
-        this.router.navigate(['/']);
+        this.router.navigate(['/eventos']);//inicio
       }),
       catchError((err) => {
         this.salir();
@@ -149,6 +150,9 @@ export class AuthService {
           }
       });
     return data;
+  }
+  returnidusu(){    
+    return this.tokenStorage.getPayload().sub;
   }
 
   errorstatus(content,error){

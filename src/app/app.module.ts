@@ -13,6 +13,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
+import { FlexLayoutModule } from '@angular/flex-layout';
+
 import { LayoutModule } from '@angular/cdk/layout';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -23,6 +25,23 @@ import { ContratoComponent } from './components/contrato/contrato.component';
 import { EventoComponent } from './components/evento/evento.component';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
 import { FormusuarioComponent } from './components/forms/formusuario/formusuario.component';
+import { ContratoComponent as FormcontratoComponent } from './components/forms/contrato/contrato.component';
+import { FormsocioComponent } from './components/forms/formsocio/formsocio.component';
+import { FormcategoriaComponent } from './components/forms/formcategoria/formcategoria.component';
+import { FormorganizativaComponent } from './components/forms/formorganizativa/formorganizativa.component';
+import { FormeventoComponent } from './components/forms/formevento/formevento.component';
+import { SociosComponent } from './components/socios/socios.component';
+import { ConfirmacionComponent } from './modals/confirmacion/confirmacion.component';
+import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
+import { ProveedorContratosComponent } from './components/proveedor-contratos/proveedor-contratos.component';
+import { ContratoverComponent } from './components/contratover/contratover.component';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { OrdenverComponent } from './components/ordenver/ordenver.component';
+import { SupplierComponent } from './components/supplier/supplier.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSlideToggleModule } from '@angular/material';
 
 @NgModule({
   declarations: [
@@ -32,14 +51,34 @@ import { FormusuarioComponent } from './components/forms/formusuario/formusuario
     ContratoComponent,
     EventoComponent,
     UsuariosComponent,
-    FormusuarioComponent
+    FormusuarioComponent,
+    FormcontratoComponent,
+    FormsocioComponent,
+    FormcategoriaComponent,
+    FormorganizativaComponent,
+    FormeventoComponent,
+    SociosComponent,
+    ConfirmacionComponent,
+    PageNotFoundComponent,
+    ProveedorContratosComponent,
+    ContratoverComponent,
+    OrdenverComponent,
+    SupplierComponent
+    
   ],
   entryComponents: [
-    FormusuarioComponent
+    FormusuarioComponent,
+    FormcontratoComponent,
+    FormsocioComponent,
+    FormcategoriaComponent,
+    FormorganizativaComponent,
+    FormeventoComponent,
+    ConfirmacionComponent
   ],
   imports: [
     RestangularModule.forRoot([AuthService], NgxRestangularService),
     NgxSpinnerModule,
+    MatSlideToggleModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -48,6 +87,11 @@ import { FormusuarioComponent } from './components/forms/formusuario/formusuario
     HttpClientModule,
     LayoutModule,
     MaterialModule,
+    FlexLayoutModule,
+    MatChipsModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    NoopAnimationsModule,
   ],
   providers: [
     AuthService,

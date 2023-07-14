@@ -1,0 +1,39 @@
+.example-card {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  mat-card-title {
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+  
+  mat-card-content {
+    padding: 24px;
+  }
+  
+  @media (max-width: 599px) {
+    .example-card {
+      padding: 16px;
+    }
+    
+    mat-card-title {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    
+    mat-card-content {
+      padding: 16px;
+    }
+    
+    div[fxLayout] {
+      flex-direction: column !important;
+    }
+  }
+  
+  .example-chip-list {
+    width: 100%;
+  }
+
+  

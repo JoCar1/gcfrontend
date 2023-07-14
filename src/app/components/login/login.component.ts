@@ -5,7 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { AuthService } from '../../service/auth.service';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { NgxSpinnerService } from "ngx-spinner";
-
+import { Restangular } from "ngx-restangular";
 // import { FuseConfigService } from '@fuse/services/config.service';
 // import { fuseAnimations } from '@fuse/animations';
 
@@ -32,7 +32,8 @@ export class LoginComponent implements OnInit
         private spinner: NgxSpinnerService,
         private _formBuilder: FormBuilder,
         private auth: AuthService,
-        public snackBar: MatSnackBar
+        public snackBar: MatSnackBar,
+        public restangular: Restangular,
     )
     {
         // Configure the layout
@@ -64,7 +65,7 @@ export class LoginComponent implements OnInit
     ngOnInit(): void
     {
         this.loginForm = this._formBuilder.group({
-            username: ['', Validators.compose([Validators.required,Validators.minLength(5),Validators.maxLength(10)])],
+            username: ['', Validators.compose([Validators.required])],
             password: ['', Validators.compose([Validators.required])]
         });
     }
@@ -72,15 +73,15 @@ export class LoginComponent implements OnInit
 
     login() {
         const data = this.loginForm.value;
-        let user = data;
-        console.log(user);
+        console.log(data);
         
         // this.user.password = data.password;
         this.spinner.show();
-        this.auth.login(user).subscribe(
+        this.auth.login(data).subscribe(
           (dat) => {
+            this.countnot();
             this.spinner.hide();
-            this.snackBar.open('Se ha conectado exitosamente', ':-)', {
+            this.snackBar.open('Se ha conectado exitosamente', 'Exito', {
               duration: 3000,
             });
           },
@@ -94,5 +95,23 @@ export class LoginComponent implements OnInit
             this.spinner.hide();
           }
         );
+    }
+
+
+    countnot(){
+      return new Promise(resolve => {
+        this.restangular.one('countnot').get('').subscribe(
+        (data) => {
+          // this.cancelar();
+          console.log(data);
+          localStorage.setItem('notificacions',JSON.stringify(data.data))
+          resolve(true);
+        },
+        ()=>{
+          resolve(true);
+          console.log("error");
+        });
+      });
+      // countnot restangular route
     }
 }

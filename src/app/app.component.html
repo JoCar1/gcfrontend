@@ -9,11 +9,29 @@
 
     <mat-sidenav-container class="a-container">
         <mat-sidenav #sidenav [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'" [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="!(isHandset$ | async) && !auth.isAuthenticated(['apiweb'])" class="sidenav" [fixedInViewport]="false">
-            <mat-toolbar color="primary">Menu</mat-toolbar>
+            <mat-toolbar color="primary" style="text-align: center;display: block;">
+                <img src="assets/imgs/logo.png" alt="" style="width: 90px">
+            </mat-toolbar>
             <mat-nav-list>
-                <a mat-list-item *ngIf="auth.isAuthenticated(['administrador'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/inicio">Inicio</a>
-                <a mat-list-item *ngIf="auth.isAuthenticated(['administrador'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/contrato">Contrato</a>
-                <a mat-list-item *ngIf="auth.isAuthenticated(['administrador'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/usuarios">Usuarios</a>
+                <!-- <a mat-list-item *ngIf="auth.isAuthenticated(['administrador','editor','visor'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/inicio" style="height: 70px;">
+                    
+                    <img src="assets/imgs/control.png" style="width: 45px;padding-right: 10px;" alt=""> Cuadro de control
+                </a> -->
+                <a mat-list-item *ngIf="auth.isAuthenticated(['administrador','editor','visor'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/contrato" style="height: 70px;">
+                    <img src="assets/imgs/Contrato128.png" style="width: 45px;padding-right: 10px;" alt=""> Documentos
+                </a>
+                <!-- <a mat-list-item *ngIf="auth.isAuthenticated(['administrador','editor','visor'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/eventos" style="height: 70px;">
+                    <img src="assets/imgs/Evento128.png" style="width: 45px;padding-right: 10px;" alt=""> Eventos
+                </a> -->
+                <a mat-list-item *ngIf="auth.isAuthenticated(['administrador','editor','visor'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/socios" style="height: 70px;">
+                    <img src="assets/imgs/Socio512.png" style="width: 45px;padding-right: 10px;" alt=""> Proveedores
+                </a>
+                <a mat-list-item *ngIf="auth.isAuthenticated(['administrador'])" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" routerLink="/usuarios" style="height: 70px;">
+                    <img src="assets/imgs/Usuario128.png" style="width: 45px;padding-right: 10px;" alt=""> Usuarios
+                </a>
+                <a mat-list-item *ngIf="!auth.isAuthenticated(['apiweb'])" (click)="logout();sidenav.toggle()" routerLinkActive="active" class="menuahr" [routerLinkActiveOptions]="{exact:true}" style="height: 70px;">
+                    <img src="assets/imgs/salir.png" style="width: 45px;padding-right: 10px;" alt="">Cerrar sesión
+                </a>
             </mat-nav-list>
 
         </mat-sidenav>
@@ -26,56 +44,54 @@
                 <h2>Gestion de Contratos</h2>
               </span>
             </mat-toolbar> -->
-            <mat-toolbar color="primary">
-                <mat-toolbar-row>
-                    <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.toggle()" *ngIf="(isHandset$ | async) && !auth.isAuthenticated(['apiweb'])">
-                        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
-                    </button>
-                    <span>Gestion de Contratos</span>
-                    <span class="example-spacer"></span>
-
-
-                    <button *ngIf="!auth.isAuthenticated(['apiweb'])" mat-mini-fab color="primary" matBadge="8" matBadgePosition="before" matBadgeColor="accent">
-                        <mat-icon aria-hidden="false" aria-label="Example heart icon">notifications</mat-icon>
-                    </button>
-
-
-                    <button *ngIf="!auth.isAuthenticated(['apiweb'])" mat-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-                        Cuenta RACSO <mat-icon>arrow_drop_down</mat-icon>
-                    </button>
-                    <mat-menu #menu="matMenu">
-                        <button mat-menu-item>
-                              <mat-icon>dialpad</mat-icon>
-                              <span>Redial</span>
-                            </button>
-                        <button mat-menu-item disabled>
-                              <mat-icon>voicemail</mat-icon>
-                              <span>Check voice mail</span>
-                            </button>
-                        <button mat-menu-item>
-                              <mat-icon>notifications_off</mat-icon>
-                              <span>Disable alerts</span>
-                            </button>
-                    </mat-menu>
-                </mat-toolbar-row>
-            </mat-toolbar>
-
-            <div>
-                <mat-toolbar *ngIf="!auth.isAuthenticated(['apiweb'])">
+            <div class="container">
+                <mat-toolbar color="primary">
                     <mat-toolbar-row>
-
-                        <button mat-button color="primary"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">add</mat-icon>
-                            Contrato</button>
-                        <button mat-button color="primary"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">add</mat-icon>
-                            Evento</button>
-                        <button mat-button color="primary"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">delete</mat-icon>
-                            Primary</button>
+                        <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="sidenav.toggle()" *ngIf="(isHandset$ | async) && !auth.isAuthenticated(['apiweb'])">
+                            <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+                        </button>
+                        <span>Gestión de Contratos</span>
+                        <span class="example-spacer"></span>
+    
+    
+                        <button *ngIf="!auth.isAuthenticated(['apiweb'])" mat-mini-fab color="primary" routerLink="/inicio" [matBadge]="notificacionfun()" matBadgePosition="before" matBadgeColor="accent">
+                            <mat-icon aria-hidden="false" aria-label="Example heart icon">notifications</mat-icon>
+                        </button>
+    
+    
+                        <!-- <button *ngIf="!auth.isAuthenticated(['apiweb'])" mat-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+                            Usuario <mat-icon>arrow_drop_down</mat-icon>
+                        </button>
+                        <mat-menu #menu="matMenu">
+                            <button mat-menu-item (click)="logout()">
+                                <mat-icon>exit_to_app</mat-icon>
+                                <span>Cerrar sesion</span>
+                            </button>
+                        </mat-menu> -->
                     </mat-toolbar-row>
                 </mat-toolbar>
-                <router-outlet></router-outlet>
-            </div>
+              
+                <div class="contenido-principal">
+                    <!-- <mat-toolbar *ngIf="!auth.isAuthenticated(['apiweb'])">
+                        <mat-toolbar-row>
+    
+                            <button *ngIf="auth.isAuthenticated(['administrador','editor'])" mat-raised-button color="primary" (click)="addContrato('add')"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">add</mat-icon>
+                                Contrato</button>
+                            <button *ngIf="auth.isAuthenticated(['administrador','editor'])" mat-raised-button color="primary" (click)="addEvento('add')"><mat-icon class="example-icon" aria-hidden="false" aria-label="Example delete icon">add</mat-icon>
+                                Evento</button>
+    
+                        </mat-toolbar-row>
+                    </mat-toolbar> -->
+                    <br><br><br>
+                    <router-outlet></router-outlet>
+                </div>
+              </div>
+
+            
+
+           
         </mat-sidenav-content>
     </mat-sidenav-container>
 
     <mat-toolbar class="example-footer">Footer</mat-toolbar>
-</ng-container>
+</ng-container>`

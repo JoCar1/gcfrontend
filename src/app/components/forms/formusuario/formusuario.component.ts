@@ -1,10 +1,11 @@
 import { Component, OnInit, Inject, ViewEncapsulation } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Iusuario } from '../../../models/interfaces';
 import { Restangular } from "ngx-restangular";
 import { NgxSpinnerService } from "ngx-spinner";
 import { MatSnackBar } from '@angular/material';
+import { FormorganizativaComponent } from '../formorganizativa/formorganizativa.component';
 
 @Component({
   selector: 'app-formusuario',
@@ -17,8 +18,11 @@ export class FormusuarioComponent implements OnInit {
   dataForm: FormGroup;
   dialogTitle: string;
   hide = true;
+  uorganizativa:any;
   ngx:Restangular;
+  uorganizativas:any =[];
   constructor(
+    public dialog: MatDialog,
     public matDialogRef: MatDialogRef<FormusuarioComponent>,
     @Inject(MAT_DIALOG_DATA) private _data: any,
     private _formBuilder: FormBuilder,
@@ -48,8 +52,24 @@ export class FormusuarioComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    // this.uorganizativasall();
   }
+
+  // uorganizativasall(){
+  //   return new Promise(resolve => {
+  //     this.restangular.one('uorganizativasall').get('').subscribe(
+  //     (data) => {
+  //       // this.cancelar();
+  //       console.log(data);
+  //       this.uorganizativas = data.data;
+  //       resolve(true);
+  //     },
+  //     ()=>{
+  //       resolve(true);
+  //       console.log("error");
+  //     });
+  //   });
+  // }
   createContactForm(): FormGroup
   {
       return this._formBuilder.group({
@@ -61,6 +81,7 @@ export class FormusuarioComponent implements OnInit {
           celular : [this.usuario.celular],
           username: [this.usuario.username],
           rol   : [this.usuario.rol]
+          // organizativa_unidad_id: [this.usuario.organizativa_unidad_id]
       });
   }
 
@@ -76,7 +97,7 @@ export class FormusuarioComponent implements OnInit {
             console.log(response);
             this.spinner.hide();
             this.cancelar();
-            this.snackBar.open(response.mensaje, ':-)', {
+            this.snackBar.open(response.mensaje, 'Exito', {
               duration: 3000,
             });
           },
@@ -85,24 +106,17 @@ export class FormusuarioComponent implements OnInit {
           });
         break;
       case "edit":
-          // this.Idata.plan = data1.plan;
-          // this.Idata.detalle = data1.detalle;
-          // this.Idata.precio = data1.precio;
-          // this.Idata.descuento = data1.descuento;
-          // this.Idata.total = data1.total;
-          // this.Idata.dias = data1.dias;
-          // this.Idata.pais_id = data1.pais_id;
-          // this.Idata.estado = data1.estado;
-          // this.Idata.put().subscribe(
-          // (response) => {
-          //   this.cancelar();
-          //   this.snackBar.open(response.mensaje, ':-)', {
-          //     duration: 3000,
-          //   });
-          // },
-          // ()=>{
-          //   this.spinner.hide();
-          // });
+        this.ngx.customPUT(data1,data1.id).subscribe(
+          (response) => {
+            console.log(response);
+            this.spinner.hide();
+            this.snackBar.open(response.mensaje, 'Exito', {
+              duration: 3000,
+            });
+          },
+          ()=>{
+            this.spinner.hide();
+          });
         break;
     }
   }
@@ -112,4 +126,30 @@ export class FormusuarioComponent implements OnInit {
     	// descripcion: ''
     });
   }
+
+  selectUorganizativa(id){
+    console.log(id);
+    this.uorganizativas.forEach(element => {
+      if(element.id == id){
+        this.uorganizativa = element;
+      }
+    });
+  }
+  // openUorganizativa(accion): void {
+  //   let data = '';
+  //   if(accion == 'edit'){
+  //     data = this.uorganizativa;
+  //   }
+    
+  //   const dialogRef = this.dialog.open(FormorganizativaComponent, {
+  //     width: '550px',
+  //     data: {accion: accion, data: data}
+  //   });
+
+  //   dialogRef.afterClosed().subscribe(result => {
+  //     console.log('The dialog was closed');
+  //     console.log(result);
+  //     this.uorganizativasall();
+  //   });
+  // }
 }

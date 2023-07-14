@@ -44,7 +44,7 @@ table {
 
 .mat-form-field {
     font-size: 14px;
-    width: 100%;
+    // width: 100%;
 }
 
 
@@ -104,4 +104,27 @@ th.mat-header-cell {
 .mat-hint,
 p {
     margin-top: 0px;
+}
+
+.mat-mini-fab.mat-primary {
+    background-color: #54c08a;
+}
+
+.mat-mini-fab.mat-accent {
+    background-color: #638ca5;
+}
+
+.mat-toolbar.mat-accent {
+    background: #35404f;
+}
+
+.mat-fab.mat-primary,
+.mat-flat-button.mat-primary,
+.mat-mini-fab.mat-primary,
+.mat-raised-button.mat-primary {
+    background-color: #54c08a;
+}
+
+.mat-toolbar.mat-primary {
+    background: #35404f;
 }

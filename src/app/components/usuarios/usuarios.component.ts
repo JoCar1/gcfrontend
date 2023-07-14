@@ -12,6 +12,9 @@ import { Restangular } from "ngx-restangular";
 import { MatSnackBar } from '@angular/material';
 import { catchError, map, startWith, switchMap, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { merge, fromEvent, BehaviorSubject, Observable, of as observableOf } from 'rxjs';
+import { ConfirmacionComponent } from '../../modals/confirmacion/confirmacion.component';
+import { NgxSpinnerService } from "ngx-spinner";
+
 export interface PeriodicElement {
   name: string;
   position: number;
@@ -33,7 +36,8 @@ const ELEMENT_DATA: Iusuario[] = [];
   ]
 })
 export class UsuariosComponent implements OnInit {
-  pageSize = 5;
+  pageSize = 25;
+  pageEvent:any;
   pageSizeOptions: number[] = [5, 10, 25, 100];
   displayedColumns = ['nombre', 'username', 'rol','created_at'];
   dataSource = new MatTableDataSource(ELEMENT_DATA);
@@ -51,10 +55,11 @@ export class UsuariosComponent implements OnInit {
     nombre:'',
     email:'',
     username:'',
-    rol:''
+    rol:'',
+    organizativa_unidad_id:''
   };
 
-  constructor(public snackBar: MatSnackBar,public restangular:Restangular,public dialog: MatDialog) { 
+  constructor(private spinner: NgxSpinnerService,public snackBar: MatSnackBar,public restangular:Restangular,public dialog: MatDialog) { 
     this.ngx = this.restangular.all('usuarios');
   }
 
@@ -81,9 +86,15 @@ export class UsuariosComponent implements OnInit {
   // }
 
   openDialog(accion): void {
+   let data;
+   if(accion == 'edit'){
+     data = this.usuario;
+   }else{
+     data = '';
+   }
     const dialogRef = this.dialog.open(FormusuarioComponent, {
       width: '550px',
-      data: {accion: accion, data: this.usuario}
+      data: {accion: accion, data: data}
     });
 
     dialogRef.afterClosed().subscribe(result => {
@@ -128,7 +139,29 @@ export class UsuariosComponent implements OnInit {
       this.data = data;
     });
   }
-  
+  removecontrato(item){
+    const dialogRef = this.dialog.open(ConfirmacionComponent, {
+      width: '250px',
+      data: {confirmacion: true,name: "Confirmar"}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if(result){
+        this.spinner.show();
+        this.ngx.customDELETE(item.id).subscribe(
+          (response) => {
+            this.sort.sortChange.emit();
+            console.log(response);
+            this.spinner.hide();
+            this.snackBar.open(response.mensaje, 'Exito', {
+              duration: 3000,
+            });
+          },
+          ()=>{
+            this.spinner.hide();
+          });
+      }
+    });
+  }  
 }
 
 export class ExampleHttpDatabase {
@@ -136,7 +169,7 @@ export class ExampleHttpDatabase {
 
   getRepoIssues(sort: string, order: string, size: number, page: number, filter:string): Observable<Iusuario> {
     if(!size){
-      size = 5;
+      size = 25;
     }
     if(!sort){
       sort = "created_at";

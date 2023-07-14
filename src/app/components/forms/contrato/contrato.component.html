@@ -2,118 +2,323 @@
     <mat-toolbar matDialogTitle class="mat-accent m-0">
         <mat-toolbar-row fxLayout="row" fxLayoutAlign="space-between center">
             <span class="title dialog-title">{{dialogTitle}}</span>
+            <span class="example-spacer"></span>
             <button mat-icon-button (click)="matDialogRef.close()" aria-label="Close dialog">
                     <mat-icon>close</mat-icon>
                 </button>
         </mat-toolbar-row>
 
-        <mat-toolbar-row class="toolbar-bottom py-16" fxLayout="column" fxLayoutAlign="center center">
+        <!-- <mat-toolbar-row class="toolbar-bottom py-16" fxLayout="column" fxLayoutAlign="center center">
             <img [src]="contact.avatar" class="avatar contact-avatar huge m-0" [alt]="contact.name" />
             <div class="contact-name mt-8">{{contact.name}} {{contact.lastName}}</div>
-        </mat-toolbar-row>
+        </mat-toolbar-row> -->
     </mat-toolbar>
-
     <div mat-dialog-content class="p-24 pb-0 m-0" fusePerfectScrollbar>
+        <form [formGroup]="dataForm">
+            <h3>
+                <mat-icon aria-hidden="false" aria-label="Example home icon">import_contacts</mat-icon>
+                Información general
+            </h3>
 
-        <form [formGroup]="contactForm">
-
-            <div fxLayout="row" fxLayoutAlign="start start">
+            <!-- <div fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Name</mat-label>
+                    <mat-label>Nombre del Contrato</mat-label>
+                    <input matInput formControlName="nombre" required>
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
-                    <input name="name" formControlName="name" matInput required>
+                    <mat-error>¡Se requiere nombre!</mat-error>
+                </mat-form-field>
+            </div> -->
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Numero de contrato</mat-label>
+                    <input matInput formControlName="telefono" required>
+                    <mat-icon matSuffix class="secondary-text">book</mat-icon>
+                    <mat-error>¡Se requiere Numero de contrato!</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Estado</mat-label>
+                    <mat-select formControlName="estado" required>
+                        <mat-option [value]="'activo'">
+                            Activo
+                        </mat-option>
+                        <mat-option [value]="'pendiente'">
+                            Pendiente
+                        </mat-option>
+                        <mat-option [value]="'borrador'">
+                            Borrador
+                        </mat-option>
+                        <mat-option [value]="'terminado'">
+                            Terminado
+                        </mat-option>
+                        <mat-option [value]="'negociacion'">
+                            En negociacion
+                        </mat-option>
+                        <mat-option [value]="'expirado'">
+                            Expirado
+                        </mat-option>
+                        <mat-option [value]="'revocado'">
+                            Revocado
+                        </mat-option>
+                        <mat-option [value]="'suspendido'">
+                            Suspendido
+                        </mat-option>
+                        <mat-option [value]="'archivado'">
+                            Archivado
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                    <mat-error>¡Se requiere estado!</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Socio de negocios</mat-label>
+                    <!-- <input type="text" matInput [matAutocomplete]="auto" formControlName="socio_id" required> -->
+                    <!-- <mat-autocomplete #auto="matAutocomplete"> -->
+                    <mat-select formControlName="socio_id" (selectionChange)="selectsocio($event.value)" required>
+                        <mat-option [value]="item.id" *ngFor="let item of socios">
+                            {{ item.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <!-- </mat-autocomplete> -->
+                    <!-- <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon> -->
+                    <mat-error>¡Se requiere socio!</mat-error>
+                </mat-form-field>
+                <div class="example-button-row" style="margin-top: 10px;">
+                    <button mat-mini-fab color="primary" (click)="openSocio('add')">
+                        <mat-icon matSuffix class="secondary-text">add</mat-icon>
+                    </button>
+                    <button mat-mini-fab (click)="openSocio('edit')" [disabled]="!socio">
+                        <mat-icon matSuffix class="secondary-text">edit</mat-icon>
+                    </button>
+                </div>
+            </div>
+
+            
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Categoria</mat-label>
+                    <mat-select formControlName="categoria_id" (selectionChange)="selectcategoria($event.value)" required>
+                        <mat-option [value]="item.id" *ngFor="let item of categorias">
+                            {{ item.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                    <mat-error>¡Se requiere categoria!</mat-error>
+                </mat-form-field>
+                <div class="example-button-row" style="margin-top: 10px;">
+                    <button mat-mini-fab color="primary" (click)="openCategoria('add')">
+                            <mat-icon matSuffix class="secondary-text">add</mat-icon>
+                        </button>
+                    <button mat-mini-fab (click)="openCategoria('edit')" [disabled]="!categoria">
+                            <mat-icon matSuffix class="secondary-text">edit</mat-icon>
+                        </button>
+                </div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Contrato principal</mat-label>
+                    <mat-select formControlName="contrato_id">
+                        <mat-option [value]="''">
+                            Ninguno
+                        </mat-option>
+                        <mat-option [value]="item.id" *ngFor="let item of contratos">
+                            {{ item.telefono }}
+                        </mat-option>
+                    </mat-select>
+                    <!-- <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon> -->
+                    <!-- <mat-error>¡Se requiere categoria!</mat-error> -->
                 </mat-form-field>
             </div>
 
             <div fxLayout="row" fxLayoutAlign="start start">
                 <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Lastname</mat-label>
+                    <mat-label>Descripcion</mat-label>
+                    <textarea matInput formControlName="descripcion">
+                                Descripcion
+                            </textarea>
+                </mat-form-field>
+            </div>
+
+
+
+
+
+            <h3>
+                <mat-icon aria-hidden="false" aria-label="Example home icon">loop</mat-icon>
+                Ciclo vital
+            </h3>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Fecha inicio</mat-label>
+                    <input matInput type="date" name="fecha_inicio" formControlName="fecha_inicio" placeholder="Elige una fecha" required>
+                    <mat-error>¡Se requiere fecha inicio!</mat-error>
+                    <!-- <input matInput [matDatepicker]="picker" [value]="date.value" formControlName="fecha_inicio" placeholder="Elige una fecha">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker> -->
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Fecha final</mat-label>
+                    <input matInput type="date" name="fecha_fin" formControlName="fecha_fin" placeholder="Elige una fecha">
+                    <!-- <mat-error>¡Se requiere fecha final!</mat-error> -->
+                    <!-- <input matInput [matDatepicker]="picker1" [value]="date.value" formControlName="fecha_fin" placeholder="Elige una fecha">
+                    <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
+                    <mat-datepicker #picker1></mat-datepicker> -->
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Fecha de prolongación</mat-label>
+                    <input matInput type="date" name="fecha_prolongacion" formControlName="fecha_prolongacion" placeholder="Elige una fecha">
+                    <!-- <mat-error>¡Se requiere fecha de prolongación!</mat-error> -->
+                    <!-- <input matInput [matDatepicker]="picker2" formControlName="fecha_prolongacion" placeholder="Elige una fecha">
+                    <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+                    <mat-datepicker #picker2></mat-datepicker> -->
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Fecha plazo de cancelación</mat-label>
+                    <input matInput type="date" name="fecha_plazo_cancelacion" formControlName="fecha_plazo_cancelacion" placeholder="Elige una fecha">
+                    <!-- <mat-error>¡Se requiere fecha plazo de cancelación!</mat-error> -->
+                    <!-- <input matInput [matDatepicker]="picker3" formControlName="fecha_plazo_cancelacion" placeholder="Elige una fecha">
+                    <mat-datepicker-toggle matSuffix [for]="picker3"></mat-datepicker-toggle>
+                    <mat-datepicker #picker3></mat-datepicker> -->
+                </mat-form-field>
+            </div>
+            <h3>
+                <mat-icon aria-hidden="false" aria-label="Example home icon">account_circle</mat-icon>
+                Organización y personas de contacto
+            </h3>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Unidad de negocio</mat-label>
+                    <mat-select formControlName="organizativa_unidad_id" (selectionChange)="selectUorganizativa($event.value)" required>
+                        <mat-option [value]="item.id" *ngFor="let item of uorganizativas">
+                            {{ item.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <!-- <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon> -->
+                    <mat-error>¡Se requiere unidad de negocio!</mat-error>
+                </mat-form-field>
+                <div class="example-button-row" style="margin-top: 10px;">
+                    <button mat-mini-fab color="primary" (click)="openUorganizativa('add')">
+                                    <mat-icon matSuffix class="secondary-text">add</mat-icon>
+                                </button>
+                    <button mat-mini-fab (click)="openUorganizativa('edit')" [disabled]="!uorganizativa">
+                                    <mat-icon matSuffix class="secondary-text">edit</mat-icon>
+                                </button>
+                </div>
+            </div>
+
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Propietario del contrato</mat-label>
+                    <mat-select formControlName="responsable_contrato_user_id" required>
+                        <mat-option [value]="item.id" *ngFor="let item of usuarios">
+                            {{ item.nombre }}
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                    <mat-error>¡Se requiere propietario del contrato!</mat-error>
+                </mat-form-field>
+            </div>
+            <div fxLayout="row" fxLayoutAlign="start start">
+                <mat-form-field appearance="outline" fxFlex>
+                    <mat-label>Contacto adicional</mat-label>
+                    <input matInput formControlName="contacto_adicional">
                     <mat-icon matSuffix class="secondary-text">account_circle</mat-icon>
-                    <input name="lastName" formControlName="lastName" matInput>
                 </mat-form-field>
             </div>
 
+
+            <h3>
+                <mat-icon aria-hidden="false" aria-label="Example home icon">attach_file</mat-icon>
+                Archivos adjuntos
+            </h3>
+            <!-- {{ archivosDB.length }} -->
             <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Nickname</mat-label>
-                    <mat-icon matSuffix class="secondary-text">star</mat-icon>
-                    <input name="nickname" formControlName="nickname" matInput>
-                </mat-form-field>
+                <div>
+                    <mat-form-field class="example-chip-list" style="width: 100%;" *ngIf="archivos.length || archivosDB.length">
+                        <mat-chip-list #chipList aria-label="Fruit selection">
+                            <mat-chip *ngFor="let item of archivosDB" [selectable]="selectable" [removable]="removable" (removed)="archivosrm(item)">
+                                {{item.nombre}}
+                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                            </mat-chip>
+                            <mat-chip *ngFor="let item of archivos" [selectable]="selectable" [removable]="removable" (removed)="remove(item)">
+                                {{item.name}}
+                                <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                            </mat-chip>
+                            <input [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur" disabled="true">
+                        </mat-chip-list>
+                    </mat-form-field>
+                    <input class="file-input" type="file" id="upimgfile" name="uploadfile" #fileInput (change)="fileChangeListener($event)" multiple>
+                </div>
+
+
+
+                <!-- <mat-form-field appearance="outline" fxFlex> -->
+                <!-- <label>Unidad de negocio</label>
+                <input type="file" id="upimgfile" accept="image/png, .jpeg, .jpg, image/gif" name="uploadfile" #fileInput (change)="fileChangeListener($event)" multiple> -->
+
             </div>
 
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Phone number</mat-label>
-                    <mat-icon matSuffix class="secondary-text">phone</mat-icon>
-                    <input formControlName="phone" matInput>
-                </mat-form-field>
-            </div>
 
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Email</mat-label>
-                    <mat-icon matSuffix class="secondary-text">email</mat-icon>
-                    <input name="email" formControlName="email" matInput type="email">
-                </mat-form-field>
-            </div>
 
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Company</mat-label>
-                    <mat-icon matSuffix class="secondary-text">domain</mat-icon>
-                    <input name="company" formControlName="company" matInput>
-                </mat-form-field>
-            </div>
 
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Job title</mat-label>
-                    <mat-icon matSuffix class="secondary-text">work</mat-icon>
-                    <input name="jobTitle" formControlName="jobTitle" matInput>
+            <!-- <div fxLayout="row" fxLayoutAlign="start center" fxFlex="1 0 auto">
+                <mat-form-field appearance="outline" fxFlex="30" class="pl-4">
+                    <mat-label>Fecha inicio</mat-label>
+                    <input matInput [matDatepicker]="picker" formControlName="fecha_inicio" placeholder="Elige una fecha">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
-            </div>
+                <mat-form-field appearance="outline" class="pl-4">
+                    <mat-label>Plazo de aviso</mat-label>
+                    <input matInput formControlName="contrato_id">
+                </mat-form-field>
+                <mat-form-field appearance="outline" fxFlex="20" class="pl-4">
+                    <mat-select formControlName="categoria_id" required>
+                        <mat-option [value]="'d'">
+                            Dias
+                        </mat-option>
+                        <mat-option [value]="'m'">
+                            Meses
+                        </mat-option>
+                        <mat-option [value]="'y'">
+                            Años
+                        </mat-option>
+                    </mat-select>
+                    <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                    <mat-error>¡Se requiere categoria!</mat-error>
+                </mat-form-field>
+            </div> -->
 
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Birthday</mat-label>
-                    <input matInput [matDatepicker]="birthdayDatePicker" name="birthday" formControlName="birthday">
-                    <mat-datepicker-toggle matSuffix [for]="birthdayDatePicker"></mat-datepicker-toggle>
-                    <mat-datepicker #birthdayDatePicker></mat-datepicker>
-                </mat-form-field>
-            </div>
-
-            <div fxLayout="row" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Address</mat-label>
-                    <mat-icon matSuffix class="secondary-text">home</mat-icon>
-                    <input name="address" formControlName="address" matInput>
-                </mat-form-field>
-            </div>
-
-            <div fxLayout="row" class="textarea-wrapper" fxLayoutAlign="start start">
-                <mat-form-field appearance="outline" fxFlex>
-                    <mat-label>Notes</mat-label>
-                    <textarea name="notes" formControlName="notes" matInput type="text" max-rows="4"></textarea>
-                </mat-form-field>
-            </div>
 
         </form>
-
     </div>
-
     <div mat-dialog-actions class="m-0 p-16" fxLayout="row" fxLayoutAlign="end center">
 
-        <button *ngIf="action === 'edit'" mat-button class="mr-8" (click)="matDialogRef.close(['delete',contactForm])" aria-label="Delete" matTooltip="Delete">
+        <!-- <button *ngIf="action === 'edit'" mat-button class="mr-8" (click)="matDialogRef.close(['delete',contactForm])" aria-label="Delete" matTooltip="Delete">
                 DELETE
+            </button> -->
+
+        <button *ngIf="action === 'add'" mat-button class="save-button" (click)="guardar()" [disabled]="dataForm.invalid" aria-label="">
+                Crear
             </button>
 
-        <button *ngIf="action !== 'edit'" mat-button class="save-button" (click)="matDialogRef.close(contactForm)" [disabled]="contactForm.invalid" aria-label="SAVE">
-                ADD
+        <button *ngIf="action === 'edit'" mat-button class="save-button" (click)="guardar()" [disabled]="dataForm.invalid" aria-label="">
+                Actualizar
             </button>
 
-        <button *ngIf="action === 'edit'" mat-button class="save-button" (click)="matDialogRef.close(['save',contactForm])" [disabled]="contactForm.invalid" aria-label="SAVE">
-                SAVE
-            </button>
 
     </div>
+
+
 </div>

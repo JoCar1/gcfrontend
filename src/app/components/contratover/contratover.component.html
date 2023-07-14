@@ -1,0 +1,613 @@
+<div [@routerTransition]>
+
+  <div class="example-container e-container mat-elevation-z8">
+    <mat-tab-group>
+      <mat-tab label="Datos de Proveedor">
+        <br>
+        <div class="centered-content">
+          <mat-card class="example-card">
+            <mat-card-title>Datos proveedor y contrato</mat-card-title>
+            <mat-card-content>
+              <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                <div fxFlex="100">
+                  <form [formGroup]="dataFormOrden">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Número contrato</mat-label>
+                        <input matInput formControlName="codigo" required>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" *ngIf="codigo_oc === null">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <input placeholder="Buscar proveedor" matInput [formControl]="proveedorCtrl"
+                          [matAutocomplete]="autoprov">
+                        <mat-autocomplete #autoprov="matAutocomplete" (optionSelected)="selectedprov($event)">
+                          <mat-option *ngFor="let proveedor of filteredProveedores | async" [value]="proveedor">
+                            {{ proveedor.nombre }} - {{ proveedor.nit }}
+                          </mat-option>
+                        </mat-autocomplete>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" *ngIf="codigo_oc === null">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <input placeholder="Nombre del proveedor" matInput [value]="getProveedorNombre()" disabled>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" *ngIf="codigo_oc === null">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <input placeholder="NIT del proveedor" matInput [value]="getProveedorNit()" disabled>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" *ngIf="codigo_oc != null">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>NIT/CI</mat-label>
+                        <input matInput formControlName="nit" required>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" *ngIf="codigo_oc != null">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Proveedor</mat-label>
+                        <input matInput formControlName="nombre_proveedor" required>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Descripción</mat-label>
+                        <textarea formControlName="descr_tipo" matInput placeholder="Descripción..."></textarea>
+                      </mat-form-field>
+                    </div>
+
+
+                    <button *ngIf="codigo_oc === null" color="primary" mat-raised-button class="save-button"
+                      (click)="guardarOrdenC()" [disabled]="dataFormOrden.invalid" aria-label="">
+                      Guardar contrato
+                    </button>
+
+                    <button *ngIf="codigo_oc != null" color="primary" mat-raised-button class="save-button"
+                      (click)="actualizarOrdenC()" [disabled]="dataFormOrden.invalid" aria-label="">
+                      Actualizar contrato
+                    </button>
+
+                  </form>
+                </div>
+              </div>
+            </mat-card-content>
+          </mat-card>
+          <br>
+        </div>
+      </mat-tab>
+      <mat-tab label="Datos de contrato">
+        <br>
+        <div class="centered-content">
+          <mat-card class="example-card">
+            <mat-card-title>Detalles</mat-card-title>
+            <mat-card-content>
+              <form [formGroup]="dataFormContrato">
+                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+                  <div fxFlex="50">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>NIT/CI del proveedor</mat-label>
+                        <input matInput formControlName="nit" required>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Razón social</mat-label>
+                        <input matInput formControlName="razon_social" required>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Numero de contrato</mat-label>
+                        <input matInput formControlName="numero" required>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Tipo contrato</mat-label>
+                        <mat-select formControlName="categoria_id" (selectionChange)="selectcategorias($event.value)"
+                          required>
+                          <mat-option [value]="item.id" *ngFor="let item of categorias">
+                            {{item.nombre}}
+                          </mat-option>
+                          <div *ngIf="categorias.length === 0">Cargando categorias...</div>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                        <mat-error>¡Se requiere tipo de contrato!</mat-error>
+                      </mat-form-field>
+                      <div class="example-button-row" style="margin-top: 10px;">
+                        <button mat-mini-fab color="primary" (click)="openCategoria('add')">
+                          <mat-icon matSuffix class="secondary-text">add</mat-icon>
+                        </button>
+                        <button mat-mini-fab (click)="openCategoria('edit')" [disabled]="!departamento_s">
+                          <mat-icon matSuffix class="secondary-text">edit</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Observación importante</mat-label>
+                        <textarea formControlName="descripcion" matInput placeholder="Observación..."></textarea>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Cuenta</mat-label>
+                        <mat-select formControlName="cuenta_id" (selectionChange)="selectcuentas($event.value)"
+                          required>
+                          <mat-option [value]="item.account_key" *ngFor="let item of cuentas">
+                            {{item.account_key}}{{item.name}}
+                          </mat-option>
+                          <div *ngIf="cuentas.length === 0">Cargando cuentas...</div>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                        <mat-error>¡Se requiere cuenta!</mat-error>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" style="margin-left: 30px;">
+                      <mat-form-field *ngIf="accsubtype==='N' || accsubtype==='C'" appearance="outline" fxFlex>
+                        <mat-label>Subuenta</mat-label>
+                        <mat-select formControlName="subcuenta_id" (selectionChange)="selectsubcuentas($event.value)">
+                          <mat-option [value]="item.account_key" *ngFor="let item of subcuentas">
+                            {{item.account_key}}{{item.name}}
+                          </mat-option>
+                          <div *ngIf="cuentas.length === 0">Cargando subcuentas...</div>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                      </mat-form-field>
+                    </div>
+                  </div>
+                  <div fxFlex="50">
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Departamento</mat-label>
+                        <mat-select formControlName="departamento_id"
+                          (selectionChange)="selectdepartamentos($event.value)" required>
+                          <mat-option [value]="item.id" *ngFor="let item of departamentos">
+                            {{item.nombre}}
+                          </mat-option>
+                          <div *ngIf="departamentos.length === 0">Cargando departamentos...</div>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+
+                        <mat-error>¡Se requiere departamento!</mat-error>
+                      </mat-form-field>
+                      <div class="example-button-row" style="margin-top: 10px;">
+                        <button mat-mini-fab color="primary" (click)="openCategoria('add')">
+                          <mat-icon matSuffix class="secondary-text">add</mat-icon>
+                        </button>
+                        <button mat-mini-fab (click)="openCategoria('edit')" [disabled]="!departamento_s">
+                          <mat-icon matSuffix class="secondary-text">edit</mat-icon>
+                        </button>
+                      </div>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" style="margin-left: 30px;">
+                      <mat-form-field *ngIf="departamentoid==44" appearance="outline" fxFlex>
+                        <mat-label>Tipo Gasto</mat-label>
+                        <mat-select formControlName="tipo_gasto">
+                          <mat-option [value]="">
+                            Ninguno
+                          </mat-option>
+                          <mat-option [value]="'A'">
+                            Administrativo
+                          </mat-option>
+                          <mat-option [value]="'M'">
+                            Marketing
+                          </mat-option>
+                          <mat-option [value]="'OR'">
+                            Operaciones Retail
+                          </mat-option>
+                          <mat-option [value]="'OC'">
+                            Operaciones Catálogo
+                          </mat-option>
+                          <mat-option [value]="'OM'">
+                            Operaciones Mayor
+                          </mat-option>
+                          <mat-option [value]="'OBI'">
+                            Operaciones Bata Industrials
+                          </mat-option>
+                          <mat-option [value]="'PAC'">
+                            PAC
+                          </mat-option>
+                          <mat-option [value]="'100C'">
+                            100% costo catalogo
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" style="margin-left: 30px;">
+                      <mat-form-field *ngIf="departamentoid==44" appearance="outline" fxFlex>
+                        <mat-label>Cadena</mat-label>
+                        <mat-select formControlName="cadena">
+                          <mat-option [value]="">
+                            Ninguno
+                          </mat-option>
+                          <mat-option [value]="'B'">
+                            Bata
+                          </mat-option>
+                          <mat-option [value]="'M'">
+                            Manaco
+                          </mat-option>
+                          <mat-option [value]="'BG'">
+                            Bubble Gummers
+                          </mat-option>
+                          <mat-option [value]="'P'">
+                            Pic'n Pay
+                          </mat-option>
+                          <mat-option [value]="'E'">
+                            Ecommerce
+                          </mat-option>
+                          <mat-option [value]="'BI'">
+                            Bata Industrials
+                          </mat-option>
+                          <mat-option [value]="'MAY'">
+                            Mayor
+                          </mat-option>
+                          <mat-option [value]="'PAC'">
+                            PAC
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start" style="margin-left: 30px;">
+                      <mat-form-field *ngIf="departamentoid==44" appearance="outline" fxFlex>
+                        <mat-label>Camapaña</mat-label>
+                        <textarea formControlName="campana" matInput placeholder="Camapaña..."></textarea>
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start" style="margin-left: 30px;">
+                      <mat-form-field *ngIf="departamentoid==44" appearance="outline" fxFlex>
+                        <mat-label>Marca</mat-label>
+                        <mat-select formControlName="pk_marca" (selectionChange)="selectmarcas($event.value)">
+                          <mat-option [value]="item.pk_marca" *ngFor="let item of marcas">
+                            {{item.descr}}
+                          </mat-option>
+                          <div *ngIf="marcas.length === 0">Cargando marcas...</div>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                      </mat-form-field>
+                    </div>
+
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Fecha inicio</mat-label>
+                        <input matInput type="date" name="fecha_inicio" formControlName="fecha_inicio"
+                          placeholder="Elige una fecha">
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Fecha fin</mat-label>
+                        <input matInput type="date" name="fecha_fin" formControlName="fecha_fin"
+                          placeholder="Elige una fecha">
+                      </mat-form-field>
+                    </div>
+                    <div fxLayout="row" fxLayoutAlign="start start">
+                      <mat-form-field appearance="outline" fxFlex>
+                        <mat-label>Con factura o retención</mat-label>
+                        <mat-select formControlName="factura_retencion" required>
+                          <mat-option [value]="'CF'">
+                            Con factura
+                          </mat-option>
+                          <mat-option [value]="'CR'">
+                            Con retención
+                          </mat-option>
+                        </mat-select>
+                        <mat-icon matSuffix class="secondary-text">outlined_flag</mat-icon>
+                        <mat-error>¡Se requiere este campo!</mat-error>
+                      </mat-form-field>
+                    </div>
+
+                  </div>
+                </div>
+
+                <button *ngIf="contratoid == 0" color="primary" mat-raised-button class="save-button"
+                  (click)="guardarContrato()" [disabled]="dataFormContrato.invalid" aria-label="">
+                  Guardar detalles
+                </button>
+
+                <button *ngIf="contratoid != 0" color="primary" mat-raised-button class="save-button"
+                  (click)="actualizarContrato()" [disabled]="dataFormContrato.invalid" aria-label="">
+                  Actualizar detalles
+                </button>
+
+              </form>
+            </mat-card-content>
+          </mat-card>
+          <br>
+        </div>
+      </mat-tab>
+      <mat-tab label="Responsables">
+        <mat-card class="example-card">
+          <mat-card-title>Responsables</mat-card-title>
+          <mat-card-content>
+            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="start start" fxLayoutGap="16px">
+              <div fxFlex="50">
+                <h3> Responsables directos</h3>
+
+                <form>
+                  <mat-form-field class="example-chip-list">
+                    <mat-chip-list #chipList aria-label="User selection">
+                      <mat-chip *ngFor="let user of users" [selectable]="selectable" [removable]="removable"
+                        (removed)="remove(user)">
+                        {{ user.nombre }}
+                        <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                      </mat-chip>
+                      <br>
+                      <input placeholder="Agregar responsables directos..." #userInput [formControl]="userCtrl"
+                        [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="add($event)">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                      <mat-option *ngFor="let user of filteredUsers | async" [value]="user">
+                        {{ user.nombre }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </form>
+              </div>
+              <div fxFlex="50">
+                <h3>Responsables de seguimiento</h3>
+                <form>
+                  <mat-form-field class="example-chip-list">
+                    <mat-chip-list #chipList1 aria-label="User selection2">
+                      <mat-chip *ngFor="let user of users2" [selectable]="selectable2" [removable]="removable2"
+                        (removed)="remove2(user)">
+                        {{ user.nombre }}
+                        <mat-icon matChipRemove *ngIf="removable2">cancel</mat-icon>
+                      </mat-chip>
+                      <br>
+                      <input placeholder="Agregar responsables de seguimiento..." #userInput2 [formControl]="userCtrl2"
+                        [matAutocomplete]="auto2" [matChipInputFor]="chipList1"
+                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur"
+                        (matChipInputTokenEnd)="add2($event)">
+                    </mat-chip-list>
+                    <mat-autocomplete #auto2="matAutocomplete" (optionSelected)="selected2($event)">
+                      <mat-option *ngFor="let user of filteredUsers2 | async" [value]="user">
+                        {{ user.nombre }}
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </form>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+        <br>
+      </mat-tab>
+      <mat-tab label="Plan de pagos">
+        <br>
+        <div class="centered-content">
+          <mat-card class="example-card">
+            <mat-card-title>Plan de pagos</mat-card-title>
+            <mat-card-content style="text-align: center">
+              <form [formGroup]="cuotasForm">
+                <mat-form-field>
+                  <input matInput [matDatepicker]="fechaInicial" formControlName="fechaInicial"
+                    placeholder="Fecha inicial">
+                  <mat-datepicker-toggle matSuffix [for]="fechaInicial"></mat-datepicker-toggle>
+                  <mat-datepicker #fechaInicial></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput type="number" formControlName="cantidadCuotas" placeholder="Cantidad de Cuotas">
+                </mat-form-field>
+                <mat-form-field>
+                  <input matInput type="number" formControlName="monto" placeholder="Monto">
+                </mat-form-field>
+                <button mat-raised-button (click)="generarCuotas()">Generar Cuotas</button>
+              </form>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="example-card">
+            <mat-card-content>
+              <table mat-table [dataSource]="dataSourceC" class="mat-elevation-z8">
+                <ng-container matColumnDef="numero_cuota">
+                  <th mat-header-cell *matHeaderCellDef>Número de Cuota</th>
+                  <td mat-cell *matCellDef="let row">{{row.numero_cuota}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="fecha_pago">
+                  <th mat-header-cell *matHeaderCellDef>Fecha de Pago</th>
+                  <td mat-cell *matCellDef="let row">{{row.fecha_pago | date: 'dd-MM-yyy'}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="monto">
+                  <th mat-header-cell *matHeaderCellDef>Monto</th>
+                  <td mat-cell *matCellDef="let row">$ {{row.monto}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="acciones">
+                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button (click)="editarCuota(row)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button mat-icon-button (click)="eliminarCuota(row)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumnsC"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumnsC;"></tr>
+              </table>
+              <mat-card *ngIf="cuotaSeleccionada">
+                <mat-card-content style="text-align: center">
+                  <form [formGroup]="cuotaEditadaForm">
+                    <mat-form-field>
+                      <input matInput type="text" formControlName="numero_cuota" placeholder="Número de Cuota">
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput [matDatepicker]="fechaPagoPicker" formControlName="fecha_pago"
+                        placeholder="Fecha de Pago">
+                      <mat-datepicker-toggle matSuffix [for]="fechaPagoPicker"></mat-datepicker-toggle>
+                      <mat-datepicker #fechaPagoPicker></mat-datepicker>
+                    </mat-form-field>
+                    <mat-form-field>
+                      <input matInput type="number" formControlName="monto" placeholder="Monto">
+                    </mat-form-field>
+                    <br>
+                    <button mat-raised-button (click)="guardarEdicionCuota()">Guardar</button>
+                    <button mat-raised-button color="warn" (click)="cancelarEdicionCuota()">Cancelar</button>
+                  </form>
+                </mat-card-content>
+              </mat-card>
+
+              <br>
+              <button *ngIf="dataSourceC.length > 0" color="primary" mat-raised-button class="save-button"
+                (click)="guardarCuotas()" aria-label="">
+                Guardar plan datos
+              </button>
+            </mat-card-content>
+          </mat-card>
+
+        </div>
+
+      </mat-tab>
+
+      <mat-tab label="Notificaciones">
+        <br>
+        <div class="centered-content">
+
+          <mat-card class="example-card">
+            <mat-card-title>Notificaciones</mat-card-title>
+            <mat-card-content>
+              <table mat-table [dataSource]="dataSource" class="mat-elevation-z8" matSort>
+
+                <!-- Asunto Column -->
+                <ng-container matColumnDef="asunto">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Asunto </th>
+                  <td mat-cell *matCellDef="let row"> {{row.asunto}} </td>
+                </ng-container>
+
+                <!-- Fecha Column -->
+                <ng-container matColumnDef="fecha">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Fecha </th>
+                  <td mat-cell *matCellDef="let row"> {{row.fecha | date}} </td>
+                </ng-container>
+
+                <!-- Recordatorio Column -->
+                <ng-container matColumnDef="recordatorio">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Recordar (días antes) </th>
+                  <td mat-cell *matCellDef="let row"> {{row.recordatorio}} </td>
+                </ng-container>
+
+                <!-- Edit Column -->
+                <ng-container matColumnDef="editar">
+                  <th mat-header-cell *matHeaderCellDef>Editar</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button (click)="editE(row)">
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <!-- Delete Column -->
+                <ng-container matColumnDef="eliminar">
+                  <th mat-header-cell *matHeaderCellDef>Eliminar</th>
+                  <td mat-cell *matCellDef="let row">
+                    <button mat-icon-button (click)="deleteE(row)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card>
+            <mat-card-content style="text-align: center">
+              <mat-form-field>
+                <input matInput [(ngModel)]="selectedE.asunto" placeholder="Asunto">
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput [(ngModel)]="selectedE.fecha" [matDatepicker]="picker" placeholder="Fecha">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker></mat-datepicker>
+              </mat-form-field>
+              <mat-form-field>
+                <input matInput type="number" [(ngModel)]="selectedE.recordatorio" placeholder="Recordatorio (días)">
+              </mat-form-field>
+              <button mat-raised-button (click)="addE()">Agregar</button>
+              <button mat-raised-button color="accent" (click)="saveE()">Guardar</button>
+            </mat-card-content>
+          </mat-card>
+        </div>
+      </mat-tab>
+
+      <mat-tab label="Archivos">
+        <br>
+        <div class="centered-content">
+
+          <mat-card class="example-card">
+
+            <mat-card-title><mat-icon aria-hidden="false" aria-label="Example home icon">attach_file</mat-icon>
+              Archivos adjuntos</mat-card-title>
+            <mat-card>
+              <mat-card-content style="text-align: center">
+
+                <!-- {{ archivosDB.length }} -->
+                <div fxLayout="row" fxLayoutAlign="start start">
+                  <div>
+                    <mat-form-field class="example-chip-list" style="width: 100%;"
+                      *ngIf="archivos.length || archivosDB.length">
+                      <mat-chip-list #chipList aria-label="Fruit selection">
+                        <mat-chip *ngFor="let item of archivosDB" [selectable]="selectable" [removable]="removable"
+                          (removed)="archivosrm(item)">
+                          <a [href]="item.url" target="_blank">
+                            {{ item.nombre }}
+                          </a>
+                          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                        </mat-chip>
+                        <mat-chip *ngFor="let item of archivos" [selectable]="selectable" [removable]="removable"
+                          (removed)="removearchivos(item)">
+                          {{item.name}}
+                          <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                        </mat-chip>
+                        <input [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                          [matChipInputAddOnBlur]="addOnBlur" disabled="true">
+                      </mat-chip-list>
+                    </mat-form-field>
+                    <br>
+                    <input class="file-input" type="file" id="upimgfile" name="uploadfile" #fileInput
+                      (change)="fileChangeListener($event)" multiple>
+                  </div>
+
+
+
+                  <!-- <mat-form-field appearance="outline" fxFlex> -->
+                  <!-- <label>Unidad de negocio</label>
+                      <input type="file" id="upimgfile" accept="image/png, .jpeg, .jpg, image/gif" name="uploadfile" #fileInput (change)="fileChangeListener($event)" multiple> -->
+
+                </div>
+                <br>
+                <button color="primary" mat-raised-button class="save-button" (click)="guardarImgs()" aria-label="">
+                  Guardar archivos
+                </button>
+
+              </mat-card-content>
+            </mat-card>
+          </mat-card>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

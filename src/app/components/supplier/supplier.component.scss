@@ -1,0 +1,72 @@
+
+.full-width {
+  width: 100%;
+}
+.container {
+    height: 100%; /* Establece la altura del contenedor principal al 100% */
+  }
+  
+  .example-container {
+    height:  calc(100vh - 180px);
+    overflow-y: auto;
+    padding-bottom: 30px;
+    background-color: white;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: 0;
+    width: -webkit-fill-available;
+    padding: 16px;
+  }
+
+.mat-horizontal-content-container
+{
+    min-height: calc(100%-72px);
+}
+  .mat-horizontal-stepper {
+    height: 100%;
+  }
+
+
+  .example-card {
+    height:  calc(100vh - 330px);
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .example-card-content {
+    height: calc(100% - 54px); /* Ajusta la altura según sea necesario */
+    overflow: auto; /* Añade desbordamiento si es necesario */
+  }
+
+  mat-card-title {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+  
+  mat-card-content {
+    padding: 5px;
+  }
+  
+  @media (max-width: 599px) {
+    .example-card {
+      padding: 16px;
+    }
+    
+    mat-card-title {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+    
+    mat-card-content {
+      padding: 16px;
+    }
+    
+    div[fxLayout] {
+      flex-direction: column !important;
+    }
+  }
